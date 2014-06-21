@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Flask Multiple Upload</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<h1>Flask Multiple Upload Demo</h1>
+
+This is a simple Python Flask web app to demonstrate an HTML5 multiple file
+uploader application combined with normal form data.<p>
+
+This uses JavaScript to post an Ajax upload to the back-end which gives us a
+nice progress bar to see the status of the upload (note: it doesn't break down
+the status per-picture, instead it's the status of the entire upload altogether).<p>
+
+A normal <code>&lt;form&gt;</code> tag is used for the upload. If the user has
+JavaScript disabled in their browser, a normal HTTP upload is posted to the
+back-end. The same endpoint is used in both cases: when the Ajax request does it,
+the server returns a unique ID to the front-end and JavaScript does the redirect.
+If the user has scripts disabled, the back-end will initiate the redirect for
+them instead.<p>
+
+You can upload files by using the multi-select file upload box (supported in
+most browsers and Internet Explorer 10+), or by dragging and dropping files into
+the dashed box below (again, in most browsers).<p>
+
+This demo app doesn't do anything with the other form data except for print it
+out in the terminal window, but it demonstrates that you <em>can</em> get to the
+other form data in addition to the uploaded files.<p>
+
+Only upload <strong>image type files</strong> in the form below.<p>
+
+<hr><p>
+
+<form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+    <strong>Normal Text Box:</strong><br>
+    <input type="text" size="20" name="input1" value="uploads"><p>
+
+    <strong>Select Box:</strong><br>
+    <select name="selectbox">
+        <option value="abc">ABC</option>
+        <option value="xyz">XYZ</option>
+    </select><p>
+
+    <strong>Checkbox:</strong><br>
+    <input type="checkbox" name="checkbox" value="on" checked> On<p>
+
+    <strong>Radio:</strong><br>
+    <input type="radio" name="radio" value="yes" checked> Yes
+    <input type="radio" name="radio" value="no"> No<p>
+
+    <strong>Text Area:</strong><br>
+    <textarea rows="4" cols="40" name="textarea">Text area contents.</textarea><p>
+
+    <strong>Files:</strong><br>
+    Select files OR drag them into the box below.
+    <input id="file-picker" type="file" name="file" accept="image/*" multiple><p>
+
+    <div id="dropbox">
+        Drag and Drop Files Here
+    </div><p>
+
+    <fieldset id="progress" style="display: none">
+        <legend>Files Progress</legend>
+
+        <div class="progress-trough">
+            <div id="progress-bar" class="progress-bar">0%</div>
+        </div>
+    </fieldset><p>
+
+    <input type="submit" value="Upload!" id="upload-button">
+</form>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/uploadr.js') }}"></script>
+
+</body>
+</html>

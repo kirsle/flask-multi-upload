@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Flask Multiple Upload</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<h1>Upload Successful!</h1>
+
+Here are the files you just uploaded. Your form data was discarded in this demo
+app, but if you check your terminal window you can see that all their names and
+values were submitted to the server.<p>
+
+<a href="{{ url_for('index') }}">Back to front page</a><p>
+
+{% for file in files %}
+    <h2>{{ file }}</h2>
+    <img src="{{ url_for('static', filename='uploads/{}/{}'.format(uuid, file)) }}">
+{% endfor %}
+
+</body>
+</html>
