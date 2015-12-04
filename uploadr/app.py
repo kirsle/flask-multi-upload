@@ -63,7 +63,7 @@ def upload_complete(uuid):
 
     files = []
     for file in glob.glob("{}/*.*".format(root)):
-        fname = file.split("/")[-1]
+        fname = file.split(os.sep)[-1]
         files.append(fname)
 
     return render_template("files.html",
