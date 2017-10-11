@@ -1,0 +1,31 @@
+body {
+    padding-top: 5rem;
+}
+
+#dropbox {
+    border: 0.2em dashed #000000;
+    padding: 2em;
+}
+
+#dropbox.active {
+    border: 0.5em dashed #FF0000;
+}
+
+.main-content {
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+.progress {
+    display: none;
+}
+
+.figure {
+    padding: 1em;
+    border: 0.1em solid #000000;
+}
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 0.9em;
+    }
+}

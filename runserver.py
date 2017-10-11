@@ -5,9 +5,9 @@ from __future__ import unicode_literals
 import sys
 import argparse
 
-from uploadr.app import app
+from photoupload.app import app
 
-parser = argparse.ArgumentParser(description="Uploadr")
+parser = argparse.ArgumentParser(description="Photo Upload App")
 parser.add_argument(
     "--port", "-p",
     type=int,
