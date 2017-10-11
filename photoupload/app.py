@@ -3,9 +3,15 @@ import os
 import json
 import glob
 from uuid import uuid4
+import config as cf
 
 app = Flask(__name__)
 
+def is_safe_path(basedir, path, follow_symlinks=True):
+  # resolves symbolic links
+  if follow_symlinks:
+    return os.path.realpath(path).startswith(os.path.realpath(basedir))
+  return os.path.abspath(path).startswith(os.path.realpath(basedir))
 
 @app.route("/")
 def index():
@@ -26,7 +32,8 @@ def upload():
         is_ajax = True
 
     # Target folder for these uploads.
-    target = "uploadr/static/uploads/{}".format(upload_key)
+    target = "{}/{}".format(cf.upload_dir,upload_key)
+
     try:
         os.mkdir(target)
     except:
@@ -56,8 +63,12 @@ def upload():
 def upload_complete(uuid):
     """The location we send them to at the end of the upload."""
 
-    # Get their files.
-    root = "uploadr/static/uploads/{}".format(uuid)
+    # Get files, making sure the path is safe!
+    root = "{}/{}".format(cf.upload_dir,uuid)
+    
+    if not is_safe_path(cf.upload_dir, root):
+        return "Error: Path is invalid!"
+
     if not os.path.isdir(root):
         return "Error: UUID not found!"
 
