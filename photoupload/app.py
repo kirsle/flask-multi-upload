@@ -1,11 +1,32 @@
 from flask import Flask, request, redirect, url_for, render_template
+from flask_sqlalchemy import SQLAlchemy
 import os
 import json
 import glob
 from uuid import uuid4
 import config as cf
 
+#Global Setup
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+db = SQLAlchemy(app)
+
+#DB Object declarations
+class Upload(db.Model):
+    __tablename__ = "uploads"
+    id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String(64), unique=True, nullable=False)
+    name = db.Column(db.String(64), nullable=False)
+    desc = db.Column(db.Text, nullable=False)
+
+class Image(db.Model):
+    __tablename__ = "images"
+    id = db.Column(db.Integer, primary_key=True)
+    upload_id = db.Column(db.Integer, db.ForeignKey('uploads.id'), nullable=False)
+    upload = db.relationship('Upload', backref=db.backref('images', lazy=True))
+    filename = db.Column(db.String(1024), nullable=False)
+
+db.create_all()
 
 def is_safe_path(basedir, path, follow_symlinks=True):
   # resolves symbolic links
@@ -22,9 +43,11 @@ def index():
 def upload():
     """Handle the upload of a file."""
     form = request.form
+    ul = Upload()
 
     # Create a unique "session ID" for this particular batch of uploads.
     upload_key = str(uuid4())
+    ul.uuid=upload_key
 
     # Is the upload using Ajax, or a direct POST by the form?
     is_ajax = False
@@ -41,10 +64,21 @@ def upload():
             return ajax_response(False, "Couldn't create upload directory: {}".format(target))
         else:
             return "Couldn't create upload directory: {}".format(target)
+    if app.debug:
+        print("=== Form Data ===")
+        for key, value in list(form.items()):
+            print(key, "=>", value)
 
-    print("=== Form Data ===")
-    for key, value in list(form.items()):
-        print(key, "=>", value)
+    #Check to make sure a name is provided
+    if len(form['name']) == 0:
+        if is_ajax:
+            return ajax_response(False, "Name is required!")
+        else:
+            return "Name is required!"
+
+    #Populate upload object fully
+    ul.name = form['name']
+    ul.desc = form['desc']
 
     for upload in request.files.getlist("file"):
         filename = upload.filename.rsplit("/")[0]
@@ -52,7 +86,9 @@ def upload():
         print("Accept incoming file:", filename)
         print("Save it to:", destination)
         upload.save(destination)
+        db.session.add(Image(filename=filename, upload=ul))
 
+    db.session.commit()
     if is_ajax:
         return ajax_response(True, upload_key)
     else:
