@@ -1,6 +1,6 @@
 # Flask Image Upload
 
-This is an HTML5 and Javascript based image upload web application desinged for Adrian Birylo and Sylwia Odrzywolska
+This is an HTML5 and Javascript based image upload web application designed for Adrian Birylo and Sylwia Odrzywolska.
 
 # License
 
