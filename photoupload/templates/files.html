@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="Sylwia Odrzywolska & Adrian Birylo Wedding Photo Upload">
+        <meta name="author" content="Nash Kaminski">
+
+        <title>Upload Succesful</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    </head>
+
+    <body>
+
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="#">Sylwia Odrzywolska & Adrian Birylo Wedding Photo Upload</a>
+        </nav>
+
+        <div class="container-fluid main-content">
+            <div class="row">
+                <div class="col-12">
+                    <h2>Upload Successful</h2>
+                    <p class="lead">Thank You (in English and Polish?)</p>
+                </div>
+            </div>
+                {% for file in files %}
+                {% if loop.index0 % 3 == 0 %}
+                <div class="row justify-content-center">
+                    {% endif %}
+                    <div class="col-md-4">
+                        <figure class="figure">
+                        <img class="figure-img img-fluid" src="{{ url_for('static', filename='uploads/{}/{}'.format(uuid, file)) }}">
+                        <figcaption class=figure-caption>{{ file }}</figcaption>
+                        </figure>
+                    </div>
+                    {% if loop.index0 % 3 == 2 or loop.last %}
+                </div>
+                {% endif %}
+                {% endfor %}
+                <div class="row">
+                    <div class="col-12"> 
+                        <a href="{{ url_for('index') }}">Upload Additional Photos</a><p>
+                        <hr>
+                        <footer>
+                            <p>Website by <a href="https://kaminski.io"/>Nash Kaminski</p>
+                        </footer>
+                    </div>
+                </div>
+            </div> <!-- /container -->
+
+
+            <!-- Bootstrap core JavaScript
+                ================================================== -->
+                <!-- Placed at the end of the document so the pages load faster -->
+                <script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+                <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+                <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+                <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+                <script src="{{ url_for('static', filename='js/ie10-viewport-bug-workaround.js') }}"></script>
+    </body>
+</html>

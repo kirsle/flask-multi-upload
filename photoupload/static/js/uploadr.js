@@ -1,15 +1,15 @@
 /******************************************************************************
- * HTML5 Multiple File Uploader Demo                                          *
+ * HTML5 Multiple File Uploader                                               *
  ******************************************************************************/
 
 // Constants
-var MAX_UPLOAD_FILE_SIZE = 1024*1024; // 1 MB
+var MAX_UPLOAD_FILE_SIZE = 1024*1024*1024; // 1 GB
 var UPLOAD_URL = "/upload";
 var NEXT_URL   = "/files/";
 
 // List of pending files to handle when the Upload button is finally clicked.
 var PENDING_FILES  = [];
-
+var FILENAMES = "";
 
 $(document).ready(function() {
     // Set up the drag/drop zone.
@@ -33,14 +33,16 @@ $(document).ready(function() {
 
 
 function doUpload() {
-    $("#progress").show();
-    var $progressBar   = $("#progress-bar");
+    $(".progress").show();
+    var $progressBar   = $(".progress-bar");
 
     // Gray out the form.
     $("#upload-form :input").attr("disabled", "disabled");
 
     // Initialize the progress bar.
     $progressBar.css({"width": "0%"});
+    $progressBar.text("0%");
+    $progressBar.attr('aria-valuenow',0);
 
     // Collect the form data.
     fd = collectFormData();
@@ -69,6 +71,7 @@ function doUpload() {
                     // Set the progress bar.
                     $progressBar.css({"width": percent + "%"});
                     $progressBar.text(percent + "%");
+                    $progressBar.attr('aria-valuenow',percent);
                 }, false)
             }
             return xhrobj;
@@ -81,6 +84,9 @@ function doUpload() {
         data: fd,
         success: function(data) {
             $progressBar.css({"width": "100%"});
+            $progressBar.text("100%");
+            $progressBar.attr('aria-valuenow',100);
+
             data = JSON.parse(data);
 
             // How'd it go?
@@ -135,10 +141,21 @@ function collectFormData() {
 
 
 function handleFiles(files) {
+    var $dropbox = $("#dropbox");
     // Add them to the pending files list.
     for (var i = 0, ie = files.length; i < ie; i++) {
+        // Add comma if not the first file
+        if (PENDING_FILES.length > 0){
+            FILENAMES = FILENAMES + ", ";
+        }
+        // Push onto pending file list
         PENDING_FILES.push(files[i]);
+
+        //Append name onto list
+        FILENAMES = FILENAMES + files[i].name;
     }
+    // Update the display to acknowledge the number of pending files.
+    $dropbox.text(FILENAMES + " ready for upload!");
 }
 
 
@@ -167,8 +184,6 @@ function initDropbox() {
         var files = e.originalEvent.dataTransfer.files;
         handleFiles(files);
 
-        // Update the display to acknowledge the number of pending files.
-        $dropbox.text(PENDING_FILES.length + " files ready for upload!");
     });
 
     // If the files are dropped outside of the drop zone, the browser will
