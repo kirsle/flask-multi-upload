@@ -35,15 +35,15 @@ def upload():
         else:
             return "Couldn't create upload directory: {}".format(target)
 
-    print "=== Form Data ==="
-    for key, value in form.items():
-        print key, "=>", value
+    print("=== Form Data ===")
+    for key, value in list(form.items()):
+        print(key, "=>", value)
 
     for upload in request.files.getlist("file"):
         filename = upload.filename.rsplit("/")[0]
         destination = "/".join([target, filename])
-        print "Accept incoming file:", filename
-        print "Save it to:", destination
+        print("Accept incoming file:", filename)
+        print("Save it to:", destination)
         upload.save(destination)
 
     if is_ajax:
